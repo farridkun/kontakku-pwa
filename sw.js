@@ -7,3 +7,7 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e=> {
     console.log('sw telah aktif');
 })
+
+self.addEventListener('fetch', e => {
+    console.log('sw fetch event', e);
+})
