@@ -6,7 +6,10 @@ db.enablePersistence().catch(err => {
     }
 })
 const contactform = document.querySelector('.add-contact form');
-const tambahContactModal = document.querySelector('#tambah_kontak_modal')
+const tambahContactModal = document.querySelector('#tambah_kontak_modal');
+const editForm = document.querySelector('.edit-contact form');
+const ubahContactModal = document.querySelector('#ubah_kontak_modal');
+let updateId = null;
 contactform.addEventListener('submit', e => {
     e.preventDefault()
     const contact = {
@@ -21,6 +24,22 @@ contactform.addEventListener('submit', e => {
         contactform.querySelector('.error').textContent = '';
     }).catch(err => {
         contactform.querySelector('.error').textContent = err.message;
+    })
+})
+
+editForm.addEventListener('submit', e => {
+    e.preventDefault()
+    const contact = {
+        name: editForm.name.value,
+        phone: editForm.phone.value,
+    }
+    db.collection('contacts').doc(updateId).update(contact).then(() => {
+        editForm.reset();
+        var instance = M.Modal.getInstance(ubahContactModal);
+        instance.close()
+        editForm.querySelector('.error').textContent = '';
+    }).catch(err => {
+        editForm.querySelector('.error').textContent = err.message;
     })
 })
 
@@ -41,5 +60,14 @@ contactContainer.addEventListener('click', e => {
     if (e.target.textContent === 'delete_outline') {
         const id = e.target.parentElement.getAttribute('data-id');
         db.collection('contacts').doc(id).delete()
+    }
+    if (e.target.textContent === 'edit') {
+        updateId = e.target.parentElement.getAttribute('data-id');
+        const contact = document.querySelector(`.contact[data-id=${updateId}]`)
+        const name = contact.querySelector('.name').innerHTML;
+        const phone = contact.querySelector('.phone').innerHTML;
+        editForm.name.value = name;
+        editForm.phone.value = phone;
+
     }
 })
