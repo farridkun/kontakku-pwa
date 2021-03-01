@@ -46,7 +46,14 @@ editForm.addEventListener('submit', e => {
 db.collection('contacts').onSnapshot(snapshot => {
     snapshot.docChanges().forEach(change => {
         if (change.type === 'added') {
-            renderContacts(change.doc.data(), change.doc.id)
+            if (window.location.pathname == '/' || window.location.pathname == '/index.html') {
+                renderContacts(change.doc.data(), change.doc.id)
+            }
+            if (window.location.pathname == '/pages/favorites.html') {
+                if (change.doc.data().favorite) {
+                    renderContacts(change.doc.data(), change.doc.id)
+                }
+            }
         }
         if (change.type === 'removed') {
             removeContact(change.doc.id)
