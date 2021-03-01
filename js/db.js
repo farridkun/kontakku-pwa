@@ -51,6 +51,9 @@ db.collection('contacts').onSnapshot(snapshot => {
         if (change.type === 'removed') {
             removeContact(change.doc.id)
         }
+        if (change.type === 'modified') {
+            updateContact(change.doc.data(), change.doc.id)
+        }
     })
 })
 
@@ -70,4 +73,16 @@ contactContainer.addEventListener('click', e => {
         editForm.phone.value = phone;
 
     }
+    if (e.target.textContent === 'star_border') {
+        const id = e.target.parentElement.getAttribute('data-id');
+        contact = {favorite:true}
+        db.collection('contacts').doc(id).update(contact);
+    }
+    
+    if (e.target.textContent === 'star') {
+        const id = e.target.parentElement.getAttribute('data-id');
+        contact = {favorite:false}
+        db.collection('contacts').doc(id).update(contact);
+    }
+
 })

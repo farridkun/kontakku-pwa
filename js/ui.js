@@ -27,3 +27,10 @@ contacts.innerHTML += html
     const contact = document.querySelector(`.contact[data-id=${id}`);
     contact.remove()
   }
+
+  const updateContact = (data, id) => {
+    const contact = document.querySelector(`.contact[data-id=${id}`);
+    contact.querySelector('.name').innerHTML = data.name;
+    contact.querySelector('.phone').innerHTML = data.phone;
+    contact.querySelectorAll('.material-icons')[1].textContent = data.favorit? 'star' : 'star_border';
+  }
