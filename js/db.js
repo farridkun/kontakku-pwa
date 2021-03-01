@@ -1,3 +1,10 @@
+db.enablePersistence().catch(err => {
+    if (err.code == 'failed-precondition') {
+        console.log('multiple tabs opened');
+    } else if (err.code == 'unimplemented') {
+        console.log('browser tidak di dukung');
+    }
+})
 const contactform = document.querySelector('.add-contact form');
 const tambahContactModal = document.querySelector('#tambah_kontak_modal')
 contactform.addEventListener('submit', e => {

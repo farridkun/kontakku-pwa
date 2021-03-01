@@ -11,11 +11,11 @@ const assets = [
     '/pages/fallback.html'
 ]
 
-const limitNumCache = (cacheName, num) => {
+const limitCacheSize = (cacheName, num) => {
     caches.open(cacheName).then(cache => {
         cache.keys().then(keys => {
             if (keys.length > num) {
-                cache.delete(keys[0]).then(limitNumCache
+                cache.delete(keys[0]).then(limitCacheSize
                     (cacheName, num))
             }
         })
@@ -36,17 +36,19 @@ self.addEventListener('activate', e=> {
     console.log('activate');
 })
 
-// self.addEventListener('fetch', e => {
-//     e.respondWith(
-//         caches.match(e.request).then(staticRes => {
-//             return staticRes || fetch(e.request).then(dynamicRes => {
-//                 return caches.open(dynamicCache).then(cache => {
-//                     cache.put(e.request.url, dynamicRes.clone())
-//                     limitNumCache(dynamicCache, 2)
-//                     return dynamicRes
-//                 })
-//             })
-//         }).catch(()=>caches.match('/pages/fallback.html'))
-//     )
-// })
+self.addEventListener('fetch', e => {
+    if (e.request.url.indexOf('firestore.googleapis.com') === -1) {
+        e.respondWith(
+            caches.match(e.request).then(staticRes => {
+                return staticRes || fetch(e.request).then(dynamicRes => {
+                    return caches.open(dynamicCache).then(cache => {
+                        cache.put(e.request.url, dynamicRes.clone())
+                        limitCacheSize(dynamicCache, 3)
+                        return dynamicRes
+                    })
+                })
+            }).catch(()=>caches.match('/pages/fallback.html'))
+        )
+    }
+})
 
