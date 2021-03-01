@@ -30,7 +30,16 @@ db.collection('contacts').onSnapshot(snapshot => {
             renderContacts(change.doc.data(), change.doc.id)
         }
         if (change.type === 'removed') {
-            console.log(`${change.doc.id} telah dihapus`);
+            removeContact(change.doc.id)
         }
     })
+})
+
+const contactContainer = document.querySelector('.contacts');
+contactContainer.addEventListener('click', e => {
+    console.log('e.target.textContent', e.target.textContent);
+    if (e.target.textContent === 'delete_outline') {
+        const id = e.target.parentElement.getAttribute('data-id');
+        db.collection('contacts').doc(id).delete()
+    }
 })
